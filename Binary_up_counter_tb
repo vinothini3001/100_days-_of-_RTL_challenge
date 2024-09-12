@@ -1,0 +1,61 @@
+module binaryupcounter_tb();
+
+	// Inputs
+	reg [3:0]din;
+	reg clk;
+	reg reset;
+	reg load;
+
+	// Outputs
+	wire [3:0] count;
+
+	parameter cycle=10;
+	// Instantiate the Unit Under Test (UUT)
+binaryupcounter DUT (
+		.din(din), 
+		.clk(clk), 
+		.reset(reset), 
+		.load(load), 
+		.count(count)
+	);
+always
+begin
+#(cycle/2);
+clk=1'b0;
+#(cycle/2)
+clk=1'b1;
+end 
+task reset_n();
+begin
+@(negedge clk);
+reset=1'b0;
+@(negedge clk);
+reset=1'b1;
+end
+endtask
+task load_t(input l,input[3:0]d);
+begin
+@(negedge clk);
+din=d;
+load=l;
+end
+endtask
+initial 
+begin
+din=0;
+clk=0;
+load=0;
+reset=0;
+end
+initial 
+begin
+reset_n;
+#100;
+load_t(1'b0,4'd13);
+load_t(1'b1,4'd13);        
+#100;
+$finish;
+end
+initial
+$monitor("Input din=%b,clk=%b,reset=%b,load=%b,Output count=%b",din,clk,reset,load,count);
+endmodule
