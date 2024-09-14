@@ -1,0 +1,20 @@
+module mod13binaryupcounter(input clk,rst,load,
+									input [3:0]data,
+									output reg [3:0]count
+    );
+	  initial
+	 begin
+	 count=4'd0;
+	 end
+	 always@(posedge clk )
+	 begin
+	 if(rst)
+	 count<=0;
+	 else if(load)
+	 count<=data;
+	 else if(count==12)
+	 count<=0;
+	 else
+	 count<=count+1'b1;
+end
+endmodule 
