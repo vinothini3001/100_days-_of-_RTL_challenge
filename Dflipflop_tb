@@ -1,0 +1,67 @@
+module Tflipflop_Dff_tb();
+
+	// Inputs
+	reg t;
+	reg rst;
+	reg clk;
+	
+	
+
+	// Outputs
+
+	wire q;
+	wire qb;
+	
+parameter CYCLE=10;
+Tflipflop_Dff uut(
+		.t(t), 
+		.rst(rst), 
+		.clk(clk),
+		.q(q), 
+		.qb(qb)
+	);
+
+	always
+	 begin
+		// Initialize Inputs
+		#(CYCLE/2);
+		clk=1'b0;
+		#(CYCLE/2);
+		clk=~clk;
+		end 
+		
+		task rst_dut();
+		begin
+		@(negedge clk);
+		rst=1'b1;
+		@(negedge clk);
+		rst=1'b0;
+		end
+		endtask
+		task t1(input a);
+		begin
+		@(negedge clk)
+		t=a;
+		end
+		endtask
+	initial
+begin
+t=0;
+clk=0;
+rst=1'b1;
+#10;
+rst_dut;
+t1(0);
+t1(1);
+t1(0);
+t1(1);
+t1(1);
+rst_dut;
+t1(0);
+t1(1);
+#10;
+$finish;
+end 
+initial
+$monitor("Input t=%b, rst=%b,clk=%b,Output q=%b,qb=%b",t,rst,clk,q,qb);
+endmodule	
