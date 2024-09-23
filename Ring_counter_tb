@@ -1,0 +1,38 @@
+module ring_counter_tb;
+
+	
+ reg clk;
+    reg reset;
+    wire [5:0] q;
+
+    // Instantiate the ring counter
+    ring_counter uut (
+        .clk(clk),
+        .reset(reset),
+        .q(q)
+    );
+
+    // Generate clock signal
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // Toggle clock every 5 ns
+    end
+
+    // Test sequence
+    initial begin
+        // Monitor the output
+        $monitor("Time: %0t | Reset: %b | Output: %b", $time, reset, q);
+
+        // Initialize signals
+        reset = 1;
+        #10; // Wait for a few clock cycles
+        reset = 0;
+
+        // Run the simulation for 50 ns
+        #100;
+
+        // End the simulation
+        $finish;
+    end
+
+endmodule 
