@@ -1,0 +1,26 @@
+module ring_counter(
+      input clk,          // Clock input
+    input reset,        // Asynchronous reset
+    output reg [5:0] q  // 6-bit output
+);
+
+    reg [2:0] cycle_count; // Counter to track cycles
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            q <= 6'b000001;  // Initialize the counter
+            cycle_count <= 3'b000; // Reset cycle count
+        end else begin
+            if (cycle_count < 3) begin
+                // Standard ring counter behavior
+                q <= {q[4:0], q[5]}; // Rotate left
+                cycle_count <= cycle_count + 1; // Increment cycle count
+            end else begin
+                // Change behavior after 3 cycles
+                // Example: Shift right and wrap around
+                q <= {q[0], q[5:1]}; // Rotate right
+            end
+        end
+    end
+
+endmodule 
