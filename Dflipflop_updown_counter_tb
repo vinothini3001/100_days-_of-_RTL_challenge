@@ -1,0 +1,41 @@
+module Dflipflop_updown_counter_tb;
+reg clk;
+reg rst_n;
+reg byteena;
+reg [15:0] d;
+wire [15:0] q;
+
+ Dflipflop_updown_counter uut (
+        .clk(clk),
+        .rst_n(rst_n),
+        .byteena(byteena),
+        .d(d),
+        .q(q)
+    );
+
+ always #5 clk = ~clk;
+task data_t;
+        input i;
+        input [15:0] j;
+        begin
+            byteena = i;
+            d = j;
+            #10;
+        end
+    endtask
+
+ initial begin
+       clk = 0;
+        rst_n = 0;
+        byteena = 2'b00;
+        d = 16'b0;
+
+ #10 rst_n = 1; 
+data_t(2'b01, 16'h8ABC);  
+data_t(2'b10, 16'hABCD);  
+data_t(2'b11, 16'hFFFF);  
+
+        #50;
+        $stop;
+ end
+endmodule
