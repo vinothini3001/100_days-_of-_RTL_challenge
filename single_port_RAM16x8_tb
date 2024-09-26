@@ -1,0 +1,84 @@
+module ram_16x8_tb;
+
+
+ wire [7:0]data;
+   reg  [3:0] addr_in;
+   reg  we_in;
+	reg re_in;
+	reg clk,rst;
+   reg  [7:0]temp_data;
+
+
+   //Step1 : Instantiate the RAM module and connect the ports
+   ram_16x8 DUT(.we_in(we_in),
+	   .re_in(re_in),
+	   .addr_in(addr_in),
+		.clk(clk),
+		.rst(rst),
+      .data(data));
+		
+		initial begin
+	clk=1'b0;
+	forever #5 clk=~clk;
+	end
+	assign data =(we_in && !re_in) ? temp_data : 8'hzz;
+  task initialize();
+	begin
+		rst=1'b1;
+		#10;
+		rst=1'b0;
+	 we_in=1'b0; 
+	 re_in=1'b0; 
+	 addr_in=4'b0000;
+	 temp_data=8'h00;
+      end
+   endtask
+	task stimulus_write(input [3:0]addr, input [7:0]data_in);
+      begin
+		@(negedge clk);
+	 addr_in <= addr;
+	 temp_data<= data_in;
+	 we_in<=1'b1;
+	 re_in<=1'b0;
+	 @(negedge clk)
+	 we_in<=1'b0;
+      end
+   endtask
+task stimulus_read(input [3:0]addr);
+      begin
+		@(negedge clk);
+	 addr_in <= addr;
+	 we_in<=1'b0;
+	 re_in<=1'b1;
+	 @(negedge clk)
+	 re_in<=1'b0;
+	 $display("Read datafrom adrress %h: %h",addr_in,data);
+      end
+   endtask
+   task delay;
+      begin
+	 #10;
+      end
+   endtask
+		
+   //Process to generate stimulus using for loop
+   initial
+      begin
+         initialize;
+	 delay;
+	 stimulus_write(4'h4,8'hA5);
+	 delay();
+	 stimulus_write(4'h5,8'hA6);
+	 delay();
+	 stimulus_read(4'h4);
+	 delay();
+	 stimulus_read(4'h5);
+	 delay();
+	 
+	       $finish;
+      end
+   initial
+      begin
+	 $monitor("Input of addr_in=%b,rst=%b,we_in=%b,re_in=%b,Output data=%d",clk,rst,addr_in,data,we_in,re_in,);
+      end	
+endmodule
