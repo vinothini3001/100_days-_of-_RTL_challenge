@@ -1,0 +1,37 @@
+module ram_16x8(input we_in,
+			input re_in,
+	   input [3:0]addr_in,
+		input clk,
+		input rst,
+	   inout [7:0]data);
+					
+					 
+   //Step1 : Declare a 8 bit wide memory having 16 locations.
+   reg [7:0]mem[15:0];
+	reg[7:0]temp_data;
+   //Understand the logic for writing data into a memory location 
+   always@(posedge clk)begin
+	if(rst)
+	begin
+	temp_data<=8'h00;
+      end
+		else if(we_in &&!re_in)
+		begin	
+         mem[addr_in]<=data;
+end
+end
+
+ always@(posedge clk)
+ begin
+	if(rst)
+	begin
+	temp_data<=8'h00;
+      end
+		else if(re_in && !we_in)
+		begin	
+         temp_data<=mem[addr_in];
+end
+end
+   assign data= (re_in && !we_in) ? temp_data : 8'hz;
+
+endmodule
