@@ -1,0 +1,70 @@
+module up_downcounter_tb;
+ reg [3:0] data;
+    reg rst;
+    reg up_down;
+    reg clk;
+    reg load;
+    wire [3:0] count;
+    up_downcounter DUT (
+        .data(data), 
+        .rst(rst), 
+        .up_down(up_down), 
+        .clk(clk), 
+        .load(load), 
+        .count(count)
+    );
+    parameter cycle = 10;
+    always begin
+        #(cycle/2) clk = ~clk;
+    end
+    task rst_t;
+    begin
+        @(negedge clk);
+        rst = 1'b1;
+        @(negedge clk);
+        rst = 1'b1;
+        @(negedge clk);
+        rst = 1'b0;
+    end
+    endtask
+    task up_down_t;
+    begin
+        @(negedge clk);
+        up_down = 1'b0;  
+        @(negedge clk);
+        up_down = 1'b1;  
+    end
+    endtask
+    task load_t(input l, input [3:0] d);
+    begin
+        @(negedge clk);
+        load = l;
+        data = d;
+        @(negedge clk);
+        load = 1'b0; 
+    end
+    endtask
+    initial begin
+        data = 0;
+        rst = 0;
+        clk = 0;
+        up_down = 0;
+        load = 0;
+        #100;
+        rst_t;
+        up_down_t;
+        #100;
+        load_t(1'b1, 4'd13);
+        #200;
+        rst_t;
+        up_down_t;
+        #100;
+        load_t(1'b0, 4'd13);
+        load_t(1'b1, 4'd13);
+        #200;
+        $finish;
+    end
+    initial
+        $monitor(" data=%b, clk=%b, rst=%b, load=%b, up_down=%b, count=%b", 
+                  data, clk, rst, load, up_down, count);
+endmodule 
