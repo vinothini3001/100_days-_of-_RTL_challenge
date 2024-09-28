@@ -1,0 +1,31 @@
+module up_downcounter(input [3:0]data,
+							input rst,up_down,clk,load,
+							output reg[3:0]count  
+  );
+  initial
+  begin
+  count=4'd0;
+  end
+  always@(posedge clk)
+  begin
+   if(rst)
+	count<=0;
+	else if(load)
+	count<=data;
+	else
+	case(up_down)
+	0:begin
+	if(count==2)
+	count<=15;
+	else
+	count<=count-1;
+	end
+	1:begin
+	if(count==15)
+	count<=2;
+	else
+	count<=count+1;
+	end
+	endcase
+	end
+endmodule
