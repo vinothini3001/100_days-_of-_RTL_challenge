@@ -1,0 +1,25 @@
+module BCD_counter(
+    input clk,
+    input reset,
+    output reg [7:0] bcd // 2 BCD digits: tens and units
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            bcd <= 8'b00000000; // Reset to 00
+        end else begin
+            if (bcd == 8'b10011001) begin // If counter reaches 99 (1001 1001 in BCD)
+                bcd <= 8'b00000000; // Reset to 00
+            end else begin
+                // Incrementing BCD
+                if (bcd[3:0] == 4'b1001) begin // If units digit is 9
+                    bcd[3:0] <= 4'b0000; // Reset units to 0
+                    bcd[7:4] <= bcd[7:4] + 1; // Increment tens digit
+                end else begin
+                    bcd[3:0] <= bcd[3:0] + 1; // Just increment units
+                end
+            end
+        end
+    end
+endmodule
+
+   
