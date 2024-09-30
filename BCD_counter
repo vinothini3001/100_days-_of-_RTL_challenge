@@ -1,0 +1,36 @@
+module BCD_counter_tb;
+
+    reg clk;
+    reg reset;
+    wire [7:0] bcd;
+
+    // Instantiate the BCD Counter
+    BCD_counter uut (
+        .clk(clk),
+        .reset(reset),
+        .bcd(bcd)
+    );
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // 10 time units period
+    end
+
+    initial begin
+        // Initialize
+        reset = 1; // Assert reset
+        #10 reset = 0; // Deassert reset
+
+        // Monitor BCD output
+        $monitor("Input clk=%b,reset=%b,Output bcd=%b",clk,reset,bcd);
+        
+        // Run the simulation for a sufficient time to observe behavior
+        #200; // Run for 200 time units
+
+        // Finish simulation
+        
+    end
+endmodule
+
+
