@@ -1,0 +1,18 @@
+module SRFlipFlop( input S,    // Set input
+    input  R,    // Reset input
+    output  Q,   // Normal output
+    output  Qn   // Complement output
+);
+
+
+wire S_nor, R_nor;
+
+
+nor (R_nor, S, Q);   
+nor (S_nor, R, Qn);  
+
+
+assign Q = S_nor;     
+assign Qn = R_nor;    
+
+endmodule
