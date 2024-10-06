@@ -1,0 +1,27 @@
+module dualport_syn_ram(din,dout,rd_addr,wr_addr,clk,rst,we,re);
+
+parameter width =8,depth=16,addr_bus=4;
+input [width-1:0]din;
+input [addr_bus-1:0]wr_addr,rd_addr;
+input we,re,clk,rst;
+output reg[width-1:0]dout;
+reg[width-1:0]mem[depth-1:0];
+integer i;
+always @(posedge clk)
+begin 
+if(rst)
+begin
+dout<=0;
+for(i=0;i<16;i=i+1)
+mem[i]<=0;
+end
+else 
+begin
+if(we==1)
+mem[wr_addr]<=din;
+if(re==1)
+dout<=mem[rd_addr];
+end
+end
+endmodule 
+
