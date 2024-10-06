@@ -1,0 +1,59 @@
+module dualport_syn_ram_tb;
+reg[7:0]din;
+reg[3:0]rd_addr;
+reg[3:0]wr_addr;
+reg clk,rst,we,re;
+wire [7:0]dout;
+dualport_syn_ram DUT(.din(din),
+					.dout(dout),
+					.rd_addr(rd_addr),
+					.wr_addr(wr_addr),
+					.clk(clk),
+					.we(we),
+					.re(re),
+					.rst(rst));
+initial begin
+clk =1'b0;
+forever #10 clk=~clk;
+end
+task initialize;
+begin
+din=8'd0;
+{rd_addr,wr_addr}=8'd0;
+{rst,we,re}=3'b100;
+end
+endtask
+task reset;
+begin
+@(negedge clk);
+rst=1'b1;
+@(negedge clk);
+rst=1'b0;
+end 
+endtask
+task write(input[15:0]i,input[2:0]j,input k);
+begin
+@(negedge clk)
+din=i;
+wr_addr=j;
+we=k;
+end
+endtask
+task read(input [2:0]m,input l);
+begin
+@(negedge clk)
+rd_addr=m;
+re=l;
+end
+endtask
+initial 
+begin
+initialize;
+reset;
+#100;
+write({$random},4'b1010,1'b1);
+#10;
+read(4'b1010,1'b1);
+#10;
+end 
+endmodule 
