@@ -1,0 +1,23 @@
+module D_flipflop (
+    input wire clk,      
+    input wire reset,      
+    output reg clk50, 
+    output reg clk25   
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            clk50 <= 1'b0;
+        end else begin
+            clk50 <= ~clk50;
+        end
+    end
+
+    always @(posedge clk50 or posedge reset) begin
+        if (reset) begin
+            clk25 <= 1'b0;
+        end else begin
+            clk25 <= ~clk25;
+        end
+    end
+
+endmodule
