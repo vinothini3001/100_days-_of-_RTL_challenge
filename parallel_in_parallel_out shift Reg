@@ -1,0 +1,17 @@
+module PIPO(
+    input wire clk,              
+        input wire load,             
+    input wire [7:0] parallel_in,
+    output reg [7:0]parallel_out        
+);
+
+        
+
+    always @(posedge clk ) begin
+        if (load) begin
+ parallel_out <= parallel_in; 
+           end 
+            
+ 
+    end
+endmodule
