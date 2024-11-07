@@ -1,0 +1,18 @@
+module grey_code_conversion(
+    input  clk,
+    input  reset,
+    output reg [3:0] grey_count,
+    output reg [3:0] bin_count
+);
+    
+
+    always @(posedge clk) begin
+        if (reset) begin
+            grey_count <= 4'b0000;
+            bin_count <= 4'b0000;
+        end else begin
+            bin_count <= bin_count + 1;
+            grey_count <= {bin_count[3], bin_count[3] ^ bin_count[2], bin_count[2] ^ bin_count[1], bin_count[1] ^ bin_count[0]};
+        end
+    end
+endmodule
