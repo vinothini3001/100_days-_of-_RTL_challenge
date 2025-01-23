@@ -1,0 +1,47 @@
+module CL_adder_tb;
+
+	// Inputs
+	reg [3:0] A;
+	reg [3:0] B;
+	reg cin;
+
+	// Outputs
+	wire [3:0] s;
+	wire cout;
+
+
+	// Instantiate the Unit Under Test (UUT)
+	CL_adder uut (
+		.A(A), 
+		.B(B), 
+		.cin(cin), 
+		.s(s), 
+		.cout(cout)
+	);
+
+	initial begin
+		// Initialize Inputs
+		A = 0;
+		B = 0;
+		cin = 0;
+
+		// Wait 100 ns for global reset to finish
+		#100;
+        
+		// Add stimulus here
+
+	end
+	initial begin 
+	A=4'b0010;
+	B=4'b0101;
+	cin=0;
+	#50;
+	A=4'b1110;
+	B=4'b1000;
+	#50;
+	$monitor("Input A=%b,B=%b,cin=%b,Output s=%b,cout=%b",A,B,cin,s,cout);
+	end
+	
+      
+endmodule
+
