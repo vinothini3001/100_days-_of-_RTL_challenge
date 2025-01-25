@@ -1,0 +1,15 @@
+module Johnson_counter(clk,rst,q);
+    input clk;      
+    input rst;       
+    output reg [3:0]q;
+
+always @(posedge clk) begin
+    if (rst)
+	 begin
+        q <= 4'b0000; 
+		  end
+    else
+        q <= {~q[0], q[3:1]}; 
+
+end
+endmodule
