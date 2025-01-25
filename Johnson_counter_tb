@@ -1,0 +1,43 @@
+module Johnson_counter_tb;
+
+    // Inputs
+    reg clk;
+    reg rst;
+
+    // Outputs
+    wire [3:0] q;
+
+    // Instantiate the Johnson counter module
+    Johnson_counter uut (
+        .clk(clk), 
+        .rst(rst), 
+        .q(q)
+    );
+
+    
+    always #5 clk = ~clk;
+
+    task reset();
+    begin
+        @(negedge clk);
+        rst = 1'b1; 
+        @(negedge clk);
+        rst = 1'b0; 
+		  end
+    endtask
+
+    initial begin
+        clk = 0;
+        rst = 0;
+        reset();
+        #100;
+		  reset();
+        #50;
+
+    end
+
+    initial begin
+        $monitor("Input clk=%b ,rst=%b ,Output q=%b", clk, rst, q);
+    end
+
+endmodule
