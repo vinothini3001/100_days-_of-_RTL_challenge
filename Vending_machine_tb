@@ -1,0 +1,49 @@
+module Vending_Machine1_tb;
+
+	// Inputs
+	reg clk;
+	reg rst;
+	reg [1:0] coin;
+
+	// Outputs
+	wire X;
+
+	// Instantiate the Unit Under Test (UUT)
+	Vending_Machine1 uut (
+		.clk(clk), 
+		.rst(rst), 
+		.coin(coin), 
+		.X(X)
+	);
+always #5 clk = ~clk;
+task reset;
+begin
+rst=0;
+#50;
+rst=1;
+#50;
+end 
+endtask
+
+
+	initial begin
+		clk = 0;
+		rst = 0;
+		coin = 0;
+		#100;
+       #10 coin = 2'b10; 
+        #10 coin = 2'b00;
+        #10 coin = 2'b10; 
+        #10 coin = 2'b11;
+		  #20 coin = 2'b10;
+		  #10 coin = 2'b10;
+        #10 coin = 2'b11;
+        #10 coin = 2'b00;
+        
+        #50;
+		  $finish;
+    end
+    
+
+endmodule
+
