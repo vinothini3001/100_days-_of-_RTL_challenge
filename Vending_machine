@@ -1,0 +1,130 @@
+module Vending_Machine1(clk,rst,coin,X);
+input clk,rst;
+input  [1:0]coin;
+output reg X;
+parameter Idle =2'b00;
+parameter s1 =2'b01;
+parameter s2 =2'b10;
+parameter s3 =2'b11;
+reg soft_rst;
+reg [1:0]ns,ps;
+reg [9:0]clk_count;
+reg [2:0]sec_count;
+
+
+always @(posedge clk,posedge rst)
+begin
+if(rst)
+begin
+clk_count<= 1'b0;
+end
+else
+begin
+if((coin[1]==1'b0)&&((ps==s1)||(ps==s2)||(ps==s3)))
+clk_count<=clk_count+1'b1;
+else
+clk_count<=0;
+end
+end
+
+
+
+always@(posedge clk,posedge rst)
+begin
+if(rst)
+begin
+sec_count<=0;
+soft_rst<=0;
+end
+else
+begin
+if(coin[1]!=1'b0)
+begin
+sec_count<=0;
+soft_rst<=0;
+end 
+else 
+begin
+if(clk_count==1023)
+begin
+if(sec_count==5)
+begin
+if(sec_count<=0)
+soft_rst<=1'b1;
+end
+else
+begin
+sec_count<=sec_count+1'b1;
+soft_rst<=1'b0;
+end
+end
+end
+end
+end
+always @(posedge clk,posedge rst)
+begin
+if(rst)
+ps<=Idle;
+else if(soft_rst)
+ps<=Idle;
+else 
+ps<=ns;
+end
+
+
+always@(*)
+begin
+ns =  Idle;
+case(ps)
+Idle: if(coin==2'b10)
+ns = s1;
+else if(coin==2'b11)
+ns=s2;
+else 
+ns=Idle;
+s1: if(coin==2'b10)
+ns=s2;
+else if(coin==2'b11)
+ns=s3;
+else 
+ns=s1;
+s2:if(coin==2'b10)
+ns=s3;
+else if(coin==2'b11)
+ns=Idle;
+else
+ns=s2;
+s3: if((coin==2'b10)||(coin==2'b11))
+ns=Idle;
+else
+ns=s3;
+endcase
+end
+
+
+always @(posedge clk,posedge rst)
+begin
+if(rst)
+begin
+X<=1'b0;
+end
+else if(soft_rst)
+begin
+X<=1'b0;
+end
+else 
+begin
+case(ps)
+Idle,s1:  X<=1'b0;
+
+s2:if(coin==2'b11)
+X<=1'b1;
+else
+X<=1'b0;
+s3:if((coin==2'b10)||(coin==2'b11))
+X<=1'b1;
+default:X<=1'b0;
+endcase
+end
+end
+endmodule
