@@ -1,0 +1,19 @@
+module SISO (clk,rst,sin,sout); 
+    input  clk;      
+    input rst;     
+    input sin;     
+    output sout; 
+ 
+
+    reg [7:0]shift_reg; 
+
+    always @(posedge clk or posedge rst) begin
+        if (rst)
+            shift_reg <= 8'b00000000; 
+        else
+            shift_reg <= {shift_reg[6:0], sin}; 
+    end
+
+    assign sout = shift_reg[7]; 
+
+endmodule
