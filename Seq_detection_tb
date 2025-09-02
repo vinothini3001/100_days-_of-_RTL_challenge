@@ -1,0 +1,51 @@
+module tb_seq_detection;
+
+    // DUT signals
+    reg clk;
+    reg reset;
+    reg din;
+    wire dout;
+
+    // Instantiate DUT
+    seq_detection dut (
+        .clk(clk),
+        .reset(reset),
+        .din(din),
+        .dout(dout)
+    );
+
+    // Clock generation (10ns period)
+    always #5 clk = ~clk;
+
+   // Task: apply a sequence using a packed vector
+task apply_sequence(input [31:0] seq, input integer length);
+    integer i;
+    begin
+        for (i = length-1; i >= 0; i=i-1) begin
+            din = seq[i];           
+            @(posedge clk); #1;
+            $display(" din=%b | dout=%b | state=%0d", din, dout, dut.state);
+        end
+    end
+endtask
+
+
+    // Stimulus
+    initial begin
+        // Initialize
+        clk = 0;
+        reset = 1;
+        din = 0;
+
+        // Hold reset for 2 cycles
+        repeat(2) @(posedge clk);
+        reset = 0;
+
+
+    apply_sequence(4'b1011, 4);         
+	 apply_sequence(7'b1011011, 7);      
+apply_sequence(10'b1101011011, 10);
+        $finish;
+    end
+
+endmodule
