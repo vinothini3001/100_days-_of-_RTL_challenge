@@ -1,0 +1,40 @@
+module Barrel_shifter_tb;
+
+	// Inputs
+	reg [7:0] din;
+	reg [2:0] shift_dig;
+	reg control_in;
+
+	// Outputs
+	wire [7:0] dout;
+
+	// Instantiate the Unit Under Test (UUT)
+	Barrel_shifter uut (
+		.din(din), 
+		.shift_dig(shift_dig), 
+		.dout(dout), 
+		.control_in(control_in)
+	);
+
+	initial begin
+		// Initialize Inputs
+		din = 0;
+		shift_dig = 0;
+		control_in = 0;
+
+		// Wait 100 ns for global reset to finish
+		#50;
+        
+		// Add stimulus here
+		din = 8'b11001100;shift_dig = 3'b001;control_in = 0;#30;
+		din = 8'b11101000;shift_dig = 3'b001;control_in = 1;#30;
+		din = 8'b10001100;shift_dig = 3'b001;control_in = 1;#30;
+		din = 8'b11000100;shift_dig = 3'b001;control_in = 1;#30;
+		din = 8'b11011100;shift_dig = 3'b001;control_in = 0;#30;
+		din = 8'b11111100;shift_dig = 3'b001;control_in = 0;#30;
+		
+
+	end
+      
+endmodule
+
